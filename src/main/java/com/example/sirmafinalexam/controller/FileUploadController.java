@@ -5,6 +5,7 @@ import com.example.sirmafinalexam.service.PlayerService;
 import com.example.sirmafinalexam.service.RecordService;
 import com.example.sirmafinalexam.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,16 +42,21 @@ public class FileUploadController {
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
 
-            if (fileName.contains("teams.csv")) {
-                teamService.addTeams(file);
-            } else if (fileName.contains("players.csv")) {
-                playerService.addPlayers(file);
-            } else if (fileName.contains("matches.csv")) {
-                matchService.addMatches(file);
-            } else if (fileName.contains("records.csv")) {
-                recordService.addRecords(file);
-            } else {
-                return ResponseEntity.badRequest().body("Unexpected file: " + fileName);
+            try {
+                if (fileName.endsWith("teams.csv")) {
+                    teamService.addTeams(file);
+                } else if (fileName.contains("players.csv")) {
+                    playerService.addPlayers(file);
+                } else if (fileName.contains("matches.csv")) {
+                    matchService.addMatches(file);
+                } else if (fileName.contains("records.csv")) {
+                    recordService.addRecords(file);
+                } else {
+                    return ResponseEntity.badRequest().body("Unexpected file: " + fileName);
+                }
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Error processing file " + fileName + ": " + e.getMessage());
             }
         }
         return ResponseEntity.ok("Files processed successfully.");

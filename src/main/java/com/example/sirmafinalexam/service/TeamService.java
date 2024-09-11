@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class TeamService {
@@ -44,9 +43,14 @@ public class TeamService {
                 }
 
                 String[] fields = line.split(",");
+                try {
                 Team team = assignFields(fields);
-
                 teams.add(team);
+
+            } catch (IllegalArgumentException e) {
+
+                throw new IllegalArgumentException("Error processing team: " + e.getMessage(), e);
+            }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,7 +64,7 @@ public class TeamService {
         try {
             int id = Integer.parseInt(fields[0]);
             if (teamRepository.existsById(id)) {
-                throw new NoSuchElementException("Team with ID " + id + " already exists");
+                throw new IllegalArgumentException("Team with ID " + id + " already exists");
             }
             String name = fields[1].trim();
             String managerFullName = fields[2].trim();
