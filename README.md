@@ -26,4 +26,6 @@ To find the pair of footballers who played the longest time together, I :
 
 - Player B enters. Player A enters. Player A leaves. Player B leaves. (Player A plays within the time Player B plays). Calculate: Player A finish time - Player A start time;
 
+6) Visual representation of the data structure I created to iterate and count the total amount of minutes a pair of footballers 
+   played together. 
 ![img.png](img.png)

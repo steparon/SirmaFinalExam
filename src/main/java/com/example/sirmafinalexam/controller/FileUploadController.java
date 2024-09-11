@@ -41,13 +41,13 @@ public class FileUploadController {
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
 
-            if (fileName.contains("teamstest.csv")) {
+            if (fileName.contains("teams.csv")) {
                 teamService.addTeams(file);
-            } else if (fileName.contains("playerstest.csv")) {
+            } else if (fileName.contains("players.csv")) {
                 playerService.addPlayers(file);
-            } else if (fileName.contains("matchestest.csv")) {
+            } else if (fileName.contains("matches.csv")) {
                 matchService.addMatches(file);
-            } else if (fileName.contains("recordstest.csv")) {
+            } else if (fileName.contains("records.csv")) {
                 recordService.addRecords(file);
             } else {
                 return ResponseEntity.badRequest().body("Unexpected file: " + fileName);

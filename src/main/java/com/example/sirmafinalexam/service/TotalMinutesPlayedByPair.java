@@ -119,9 +119,6 @@ a list of records shares the same match id; Then I can access all the records of
     }
 
 
-
-
-
   public String getResultsForPrinting(Set<Player> maxTimePlayers, HashMap<Set<Player>, HashMap<Integer, Integer>> map) {
       if (maxTimePlayers == null || map == null || maxTimePlayers.isEmpty() || !map.containsKey(maxTimePlayers)) {
           return "No players found with matching play time.";
@@ -129,28 +126,33 @@ a list of records shares the same match id; Then I can access all the records of
 
       HashMap<Integer, Integer> matchTimes = map.get(maxTimePlayers);
 
-      StringBuilder result = new StringBuilder();
+      StringBuilder firstPartResult = new StringBuilder();
+      StringBuilder secondPartResult = new StringBuilder();
       Iterator<Player> iterator = maxTimePlayers.iterator();
+      int totalMins = 0;
 
       if (iterator.hasNext()) {
           Player playerA = iterator.next();
-          result.append("Player A ID: ").append(playerA.getId());
+          firstPartResult.append(playerA.getId()).append(", ");
       }
 
       if (iterator.hasNext()) {
           Player playerB = iterator.next();
-          result.append(", Player B ID: ").append(playerB.getId());
+          firstPartResult.append(playerB.getId());
       }
 
       for (Map.Entry<Integer, Integer> entry : matchTimes.entrySet()) {
           Integer matchId = entry.getKey();
           Integer minutesPlayed = entry.getValue();
-          result.append("Match ID: ").append(matchId)
-                  .append(", Minutes played together: ").append(minutesPlayed)
+          secondPartResult.append(matchId)
+                  .append(", ").append(minutesPlayed)
                   .append("\n");
+          totalMins+=minutesPlayed;
       }
 
-      return result.toString();
+      firstPartResult.append(", ").append(totalMins).append("\n");
+
+      return firstPartResult.append(secondPartResult).toString();
   }
 
     /*This method will help me identify for how long two players played together at the same time during one match
@@ -183,7 +185,6 @@ a list of records shares the same match id; Then I can access all the records of
         }
         return result;
     }
-
 
     /*
     Two players did NOT play together:
