@@ -51,9 +51,16 @@ public class RecordService {
                     skipHeader = false;
                     continue;
                 }
+
                 String[] fields = line.split(",");
+
+                try {
+
                 records.add(assignFields(fields));
 
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Error: " + e.getMessage(), e);
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to read the file: " + e.getMessage(), e);

@@ -78,7 +78,6 @@ a list of records shares the same match id; Then I can access all the records of
 
                     Set<Player> currentPlayers = new HashSet<>(Arrays.asList(playerA, playerB));
 
-
                     if (mapToCountMaxMinsPerPair.containsKey(currentPlayers)) {
                         mapToCountMaxMinsPerPair.get(currentPlayers).put(records.get(i).getMatch().getId(), result);
                     } else {
@@ -95,8 +94,10 @@ a list of records shares the same match id; Then I can access all the records of
     }
 
     public Set<Player> iterateMapToCountMaxMinsPerPair(HashMap<Set<Player>, HashMap<Integer, Integer>> map) {
-        //I am looking for the pair of footballers with max time played together
-
+        /*I am looking for the pair of footballers with max time played together
+          since there can be multiple pairs of those who have played max amount of minutes, I really should be
+          returning a map with multiple sets of pairs of players but the task doesn't require us to do that
+        */
         HashMap <Set<Player>, HashMap<Integer, Integer>> toReturn = new HashMap<>();
         Set<Player> maxTimePlayers = null;
         int maxTime = 0;

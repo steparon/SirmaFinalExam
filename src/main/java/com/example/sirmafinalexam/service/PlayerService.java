@@ -1,6 +1,7 @@
 package com.example.sirmafinalexam.service;
 
 import com.example.sirmafinalexam.helper.NumOfFieldsValidationHelper;
+import com.example.sirmafinalexam.helper.PlayerNumberValidationHelper;
 import com.example.sirmafinalexam.helper.PlayerPositionValidationHelper;
 import com.example.sirmafinalexam.model.Player;
 import com.example.sirmafinalexam.model.Team;
@@ -49,7 +50,13 @@ public class PlayerService {
                     continue;
                 }
                 String[] fields = line.split(",");
+
+                try {
                 players.add(assignFields(fields));
+                } catch (IllegalArgumentException e) {
+
+                    throw new IllegalArgumentException("Error: " + e.getMessage(), e);
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to read the file: " + e.getMessage(), e);
@@ -71,6 +78,7 @@ public class PlayerService {
                 throw new IllegalArgumentException("Player with ID " + id + " already exists");
             }
 
+            PlayerNumberValidationHelper.validatePlayerNumber(fields[1]);
             int teamNumber = parseTeamNumber(fields[1]);
             String position = fields[2].trim();
 

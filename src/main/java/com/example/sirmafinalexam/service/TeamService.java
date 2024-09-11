@@ -43,13 +43,15 @@ public class TeamService {
                 }
 
                 String[] fields = line.split(",");
+
                 try {
+
                 Team team = assignFields(fields);
                 teams.add(team);
 
             } catch (IllegalArgumentException e) {
 
-                throw new IllegalArgumentException("Error processing team: " + e.getMessage(), e);
+                throw new IllegalArgumentException("Error: " + e.getMessage(), e);
             }
             }
         } catch (IOException e) {

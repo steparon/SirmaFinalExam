@@ -45,11 +45,11 @@ public class FileUploadController {
             try {
                 if (fileName.endsWith("teams.csv")) {
                     teamService.addTeams(file);
-                } else if (fileName.contains("players.csv")) {
+                } else if (fileName.endsWith("players.csv")) {
                     playerService.addPlayers(file);
-                } else if (fileName.contains("matches.csv")) {
+                } else if (fileName.endsWith("matches.csv")) {
                     matchService.addMatches(file);
-                } else if (fileName.contains("records.csv")) {
+                } else if (fileName.endsWith("records.csv")) {
                     recordService.addRecords(file);
                 } else {
                     return ResponseEntity.badRequest().body("Unexpected file: " + fileName);
