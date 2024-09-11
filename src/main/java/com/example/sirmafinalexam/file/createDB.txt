@@ -1,0 +1,50 @@
+create table teams
+(
+    team_id           int                                    not null
+        primary key,
+    team_name         varchar(50) collate utf8mb4_unicode_ci not null,
+    manager_full_name varchar(50) collate utf8mb4_unicode_ci not null,
+    `group`           varchar(50) collate utf8mb4_unicode_ci not null
+);
+
+create table matches
+(
+    match_id  int         not null
+        primary key,
+    team_a_id int         not null,
+    team_b_id int         not null,
+    date      date        not null,
+    score     varchar(10) not null,
+    constraint matches_team_a_fk
+        foreign key (team_a_id) references teams (team_id),
+    constraint matches_team_b_fk
+        foreign key (team_b_id) references teams (team_id)
+);
+
+create table players
+(
+    player_id   int                                     not null
+        primary key,
+    team_number int                                     not null,
+    position    varchar(10)                             not null,
+    full_name   varchar(255) collate utf8mb4_unicode_ci null,
+    team_id     int                                     not null,
+    constraint players_teams_team_id_fk
+        foreign key (team_id) references teams (team_id)
+);
+
+create table records
+(
+    record_id int not null
+        primary key,
+    player_id int not null,
+    match_id  int not null,
+    from_mins int not null,
+    to_mins   int not null,
+    constraint records_match_fk
+        foreign key (match_id) references matches (match_id),
+    constraint records_players_player_id_fk
+        foreign key (player_id) references players (player_id)
+);
+
+
