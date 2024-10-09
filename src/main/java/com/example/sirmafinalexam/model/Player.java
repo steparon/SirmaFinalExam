@@ -3,6 +3,8 @@ package com.example.sirmafinalexam.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,4 +30,22 @@ public class Player {
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, teamNumber, position, fullName, team);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return id == player.id &&
+                teamNumber == player.teamNumber &&
+                Objects.equals(position, player.position) &&
+                Objects.equals(fullName, player.fullName) &&
+                Objects.equals(team, player.team);
+    }
+
 }

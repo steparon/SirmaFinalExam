@@ -23,13 +23,44 @@ public class TotalMinutesPlayedByPair {
     private final RecordRepository recordRepository;
 
     @Autowired
-
     public TotalMinutesPlayedByPair(TeamRepository teamRepository, PlayerRepository playerRepository,
                                     MatchRepository matchRepository, RecordRepository recordRepository) {
         this.teamRepository = teamRepository;
         this.playerRepository = playerRepository;
         this.matchRepository = matchRepository;
         this.recordRepository = recordRepository;
+    }
+
+    public boolean didNotPlayTogether(Record recordOne, Record recordTwo) {
+        if (recordOne.getFinishMin() < recordTwo.getStartMin() || recordOne.getStartMin() > recordTwo.getFinishMin()) {
+            return true;
+        }
+        return false;
+    }
+
+    public Integer calculateMinsPlayed(Record recordA, Record recordB) {
+        int result = 0;
+
+        if (recordA.getStartMin() == recordB.getStartMin()) {
+            result = Math.min(recordA.getFinishMin(), recordB.getFinishMin()) - recordA.getStartMin();
+
+        } else if (recordA.getFinishMin() < recordB.getFinishMin()) {
+            if (recordA.getStartMin() < recordB.getStartMin()) {
+                result = recordA.getFinishMin() - recordB.getStartMin();
+            } else {
+                result = recordA.getFinishMin() - recordA.getStartMin();
+            }
+
+        } else if (recordA.getFinishMin() > recordB.getFinishMin()) {
+            if (recordA.getStartMin() < recordB.getStartMin()) {
+                result = recordB.getFinishMin() - recordB.getStartMin();
+            } else {
+                result = recordB.getFinishMin() - recordA.getStartMin();
+            }
+        } else if (recordA.getFinishMin() == recordB.getFinishMin()) {
+            result = recordA.getFinishMin() - Math.max(recordA.getStartMin(), recordB.getStartMin());
+        }
+        return result;
     }
 
     /*I am grouping the records by match's id to make sure I am checking the records within one match,
@@ -39,7 +70,6 @@ a list of records shares the same match id; Then I can access all the records of
     public Map<Integer, List<Record>> groupRecordsByMatchId() {
 
         List<Record> records = recordRepository.findAll();
-
         Map<Integer, List<Record>> recordsByMatch = new HashMap<>();
 
         for (Record record : records) {
@@ -89,7 +119,6 @@ a list of records shares the same match id; Then I can access all the records of
                 }
             }
         }
-
         return mapToCountMaxMinsPerPair;
     }
 
@@ -98,7 +127,8 @@ a list of records shares the same match id; Then I can access all the records of
           since there can be multiple pairs of those who have played max amount of minutes, I really should be
           returning a map with multiple sets of pairs of players but the task doesn't require us to do that
         */
-        HashMap <Set<Player>, HashMap<Integer, Integer>> toReturn = new HashMap<>();
+        //HashMap <Set<Player>, HashMap<Integer, Integer>> toReturn = new HashMap<>();
+
         Set<Player> maxTimePlayers = null;
         int maxTime = 0;
 
@@ -155,47 +185,4 @@ a list of records shares the same match id; Then I can access all the records of
 
       return firstPartResult.append(secondPartResult).toString();
   }
-
-    /*This method will help me identify for how long two players played together at the same time during one match
-    If they did play simultaneously, I will count the amount of minutes, if they didn't, check the next record
-    We know that two footballers played together at the same time if one of these conditions is true:
-    - they entered the field at the same time
-    - player A entered while player B was playing, therefore B startMin < A startMin < B finishMin
-    - player B entered while player A was playing, therefore A startMin < B startMin < A finishMin
-    - player A entered while player B was playing and player A finished playing before player B,
-    therefore A finishMin < B finishMin && A startMin > B startMin
-    - player B entered while player A was playing and player B finished playing before player B, thus
-    B finishMin < A finishMin && A startMin < B startMin
-    */
-    public Integer calculateMinsPlayed(Record recordA, Record recordB) {
-        int result = 0;
-        if (recordA.getStartMin() == recordB.getStartMin()) {
-            result = Math.min(recordA.getFinishMin(), recordB.getFinishMin()) - recordA.getStartMin();
-        } else if (recordA.getFinishMin() < recordB.getFinishMin()) {
-            if (recordA.getStartMin() < recordB.getStartMin()) {
-                result = recordA.getFinishMin() - recordB.getStartMin();
-            } else {
-                result = recordA.getFinishMin() - recordA.getStartMin();
-            }
-        } else if (recordA.getFinishMin() > recordB.getFinishMin()) {
-            if (recordA.getStartMin() < recordB.getStartMin()) {
-                result = recordB.getFinishMin() - recordA.getStartMin();
-            } else {
-                result = recordB.getFinishMin() - recordB.getStartMin();
-            }
-        }
-        return result;
-    }
-
-    /*
-    Two players did NOT play together:
-    -if player A left before player B entered ( A finishMin < B startMin )
-    -player B finished before player A entered ( B finishMin > A startMin )
-      */
-    public boolean didNotPlayTogether(Record recordOne, Record recordTwo) {
-        if (recordOne.getFinishMin() < recordTwo.getStartMin() || recordOne.getStartMin() > recordTwo.getFinishMin()) {
-            return true;
-        }
-        return false;
-    }
 }
